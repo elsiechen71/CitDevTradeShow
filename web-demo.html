@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Innovation Mobile App - Web Demo</title>
+    <title>Innovation Quest - Gamified Mobile App</title>
     <style>
         * {
             margin: 0;
@@ -25,9 +25,103 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         
+        .game-header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .level-text {
+            font-size: 16px;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .stat-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #3498db;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .navigation-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            background: #bdc3c7;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #3498db;
+            transform: scale(1.3);
+        }
+        
+        .dot.completed {
+            background: #2ecc71;
+        }
+        
+        .dot.locked {
+            background: #ecf0f1;
+            cursor: not-allowed;
+        }
+        
+        .page-container {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .page-container.fade {
+            opacity: 0.3;
+        }
+        
         .header {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             background: white;
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
@@ -36,62 +130,147 @@
         }
         
         .title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: #2c3e50;
             margin-bottom: 8px;
+            text-align: center;
         }
         
         .subtitle {
             font-size: 16px;
             color: #7f8c8d;
+            text-align: center;
         }
         
-        .features-container {
+        .content-container {
             padding: 0 20px 20px;
         }
         
-        .feature-card {
-            padding: 20px;
-            margin: 10px 0;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .icon-container {
+            text-align: center;
+            margin-bottom: 20px;
         }
         
-        .feature-card:hover {
-            transform: translateY(-2px);
+        .page-icon {
+            font-size: 60px;
+            text-align: center;
         }
         
-        .primary-card { background: #3498db; }
-        .secondary-card { background: #e74c3c; }
-        .accent-card { background: #2ecc71; }
-        .warning-card { background: #f39c12; }
+        .content-text {
+            font-size: 16px;
+            color: #2c3e50;
+            line-height: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
         
-        .feature-title {
-            font-size: 20px;
+        .challenge-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .challenge-title {
+            font-size: 16px;
             font-weight: bold;
-            color: white;
-            margin-bottom: 8px;
+            color: #856404;
+            margin-bottom: 5px;
         }
         
-        .feature-description {
+        .challenge-text {
             font-size: 14px;
-            color: white;
-            opacity: 0.9;
+            color: #856404;
             line-height: 20px;
         }
         
-        .footer {
+        .action-button {
+            margin: 0 20px 20px;
+            padding: 15px;
+            border-radius: 25px;
             text-align: center;
-            padding: 30px 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
         
-        .footer-text {
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .action-button-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .completed-steps {
+            margin: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 10px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .completed-title {
             font-size: 16px;
-            color: #7f8c8d;
-            font-style: italic;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .completed-step {
+            font-size: 14px;
+            color: #155724;
+            margin-bottom: 5px;
+        }
+        
+        .power-ups {
+            margin: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .power-ups-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .power-up-item {
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #856404;
+            font-weight: 500;
+        }
+        
+        .achievements {
+            margin: 20px;
+            padding: 15px;
+            background: #d1ecf1;
+            border-radius: 10px;
+            border: 1px solid #bee5eb;
+        }
+        
+        .achievements-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-text {
+            font-size: 14px;
+            color: #0c5460;
+            margin-bottom: 5px;
         }
         
         .demo-notice {
@@ -116,55 +295,389 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1 class="title">Innovation Mobile App</h1>
-            <p class="subtitle">Discover Amazing Features</p>
+        <!-- Game Header -->
+        <div class="game-header">
+            <div class="score-container">
+                <div class="score-text">Score: <span id="score">0</span></div>
+                <div class="level-text">Level <span id="currentLevel">1</span>/6</div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-text">🔥 Streak: <span id="streak">0</span></div>
+                <div class="stat-text">🏆 High: <span id="highScore">0</span></div>
+                <div class="stat-text">🏅 Achievements: <span id="achievementCount">0</span>/6</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
         </div>
         
+        <!-- Navigation Dots -->
+        <div class="navigation-dots" id="navigationDots">
+            <!-- Dots will be generated by JavaScript -->
+        </div>
+        
+        <!-- Demo Notice -->
         <div class="demo-notice">
-            <h3>📱 Web Demo</h3>
-            <p>This is a web preview of your React Native mobile app!</p>
+            <h3>🎮 Gamified Innovation Quest</h3>
+            <p>Complete challenges to unlock amazing features! Each step is a new level.</p>
         </div>
         
-        <div class="features-container">
-            <div class="feature-card primary-card" onclick="showAlert('Smart Dashboard')">
-                <div class="feature-title">📊 Smart Dashboard</div>
-                <div class="feature-description">
-                    Get insights and analytics at your fingertips
+        <!-- Page Content -->
+        <div class="page-container" id="pageContainer">
+            <div class="header">
+                <h1 class="title" id="pageTitle">🎮 Welcome to Innovation Quest!</h1>
+                <p class="subtitle" id="pageSubtitle">Complete challenges to unlock amazing features</p>
+            </div>
+            
+            <div class="content-container">
+                <div class="icon-container">
+                    <div class="page-icon" id="pageIcon">🚀</div>
+                </div>
+                
+                <div class="content-text" id="contentText">
+                    Welcome, adventurer! Your journey to innovation begins here. Each step will unlock new powers and features for your mobile app.
+                </div>
+                
+                <div class="challenge-box" id="challengeBox" style="display: none;">
+                    <div class="challenge-title">🎯 Challenge:</div>
+                    <div class="challenge-text" id="challengeText"></div>
                 </div>
             </div>
             
-            <div class="feature-card secondary-card" onclick="showAlert('AI Assistant')">
-                <div class="feature-title">🤖 AI Assistant</div>
-                <div class="feature-description">
-                    Your personal AI helper for productivity
-                </div>
+            <div class="action-button" id="actionButton" style="background: #3498db;">
+                <div class="action-button-text" id="actionButtonText">Start Adventure</div>
             </div>
             
-            <div class="feature-card accent-card" onclick="showAlert('Smart Camera')">
-                <div class="feature-title">📷 Smart Camera</div>
-                <div class="feature-description">
-                    Advanced camera features with AI recognition
-                </div>
+            <div class="power-ups" id="powerUps" style="display: none;">
+                <!-- Power-ups will be generated by JavaScript -->
             </div>
             
-            <div class="feature-card warning-card" onclick="showAlert('Cloud Sync')">
-                <div class="feature-title">☁️ Cloud Sync</div>
-                <div class="feature-description">
-                    Seamlessly sync your data across all devices
-                </div>
+            <div class="completed-steps" id="completedSteps" style="display: none;">
+                <div class="completed-title">✅ Completed Steps:</div>
+                <div id="completedStepsList"></div>
             </div>
-        </div>
-        
-        <div class="footer">
-            <p class="footer-text">Innovation at your fingertips 🚀</p>
+            
+            <div class="achievements" id="achievements" style="display: none;">
+                <!-- Achievements will be generated by JavaScript -->
+            </div>
         </div>
     </div>
     
     <script>
-        function showAlert(feature) {
-            alert(`You selected: ${feature}`);
+        // Game state
+        let currentPage = 0;
+        let score = 0;
+        let completedSteps = [];
+        let achievements = [];
+        let powerUps = [];
+        let streak = 0;
+        let highScore = 0;
+        let levelStartTime = Date.now();
+        
+        // Achievement definitions
+        const achievementDefinitions = [
+            { id: 'first_step', name: '🚀 First Steps', description: 'Complete your first challenge', condition: (score, steps, time) => steps >= 1 },
+            { id: 'speed_demon', name: '⚡ Speed Demon', description: 'Complete a level in under 10 seconds', condition: (score, steps, time) => time < 10000 },
+            { id: 'streak_master', name: '🔥 Streak Master', description: 'Complete 3 levels in a row', condition: (score, steps, time) => streak >= 3 },
+            { id: 'high_scorer', name: '🏆 High Scorer', description: 'Reach 500 points', condition: (score, steps, time) => score >= 500 },
+            { id: 'perfectionist', name: '💎 Perfectionist', description: 'Complete all levels', condition: (score, steps, time) => steps >= 5 },
+            { id: 'time_master', name: '⏰ Time Master', description: 'Complete all levels in under 2 minutes', condition: (score, steps, time) => time < 120000 },
+        ];
+
+        // Power-up definitions
+        const powerUpDefinitions = [
+            { id: 'double_points', name: '💎 Double Points', description: 'Next level gives 2x points', multiplier: 2 },
+            { id: 'time_bonus', name: '⏰ Time Bonus', description: 'Extra time for next challenge', bonus: 5000 },
+            { id: 'skip_level', name: '🚀 Skip Level', description: 'Skip to next level instantly', skip: true },
+        ];
+
+        const pages = [
+            {
+                id: 0,
+                title: "🎮 Welcome to Innovation Quest!",
+                subtitle: "Complete challenges to unlock amazing features",
+                content: "Welcome, adventurer! Your journey to innovation begins here. Each step will unlock new powers and features for your mobile app.",
+                buttonText: "Start Adventure",
+                buttonColor: "#3498db",
+                icon: "🚀",
+                timeLimit: null
+            },
+            {
+                id: 1,
+                title: "📊 Level 1: Smart Dashboard",
+                subtitle: "Master the art of data visualization",
+                content: "Learn to create beautiful dashboards that turn complex data into simple insights. This is your foundation for all future innovations.",
+                buttonText: "Complete Challenge",
+                buttonColor: "#e74c3c",
+                icon: "📈",
+                challenge: "Create your first dashboard widget",
+                timeLimit: 30000
+            },
+            {
+                id: 2,
+                title: "🤖 Level 2: AI Assistant",
+                subtitle: "Unlock the power of artificial intelligence",
+                content: "Train your AI assistant to help with productivity tasks. The more you interact, the smarter it becomes!",
+                buttonText: "Train AI",
+                buttonColor: "#2ecc71",
+                icon: "🧠",
+                challenge: "Teach AI 3 new commands",
+                timeLimit: 25000
+            },
+            {
+                id: 3,
+                title: "📷 Level 3: Smart Camera",
+                subtitle: "Capture the world with AI vision",
+                content: "Use advanced computer vision to recognize objects, faces, and scenes. Turn your camera into a powerful AI tool!",
+                buttonText: "Activate Vision",
+                buttonColor: "#f39c12",
+                icon: "👁️",
+                challenge: "Identify 5 different objects",
+                timeLimit: 20000
+            },
+            {
+                id: 4,
+                title: "☁️ Level 4: Cloud Sync",
+                subtitle: "Connect everything, everywhere",
+                content: "Sync your data across all devices seamlessly. Never lose your progress again!",
+                buttonText: "Sync All Data",
+                buttonColor: "#9b59b6",
+                icon: "🌐",
+                challenge: "Sync data to 3 devices",
+                timeLimit: 15000
+            },
+            {
+                id: 5,
+                title: "🏆 Congratulations!",
+                subtitle: "You've mastered innovation!",
+                content: "You've completed all challenges and unlocked the full power of your Innovation Mobile App!",
+                buttonText: "Play Again",
+                buttonColor: "#e67e22",
+                icon: "🎉",
+                timeLimit: null
+            }
+        ];
+        
+        // Check for new achievements
+        function checkAchievements(newScore, newSteps, levelTime) {
+            const newAchievements = [];
+            achievementDefinitions.forEach(achievement => {
+                if (!achievements.includes(achievement.id) && 
+                    achievement.condition(newScore, newSteps, levelTime)) {
+                    newAchievements.push(achievement);
+                }
+            });
+            
+            if (newAchievements.length > 0) {
+                achievements.push(...newAchievements.map(a => a.id));
+                alert(`🏆 Achievement Unlocked!\n\n${newAchievements.map(a => `${a.name}\n${a.description}`).join('\n\n')}`);
+            }
         }
+
+        // Generate random power-up
+        function generatePowerUp() {
+            if (Math.random() < 0.3) { // 30% chance
+                const randomPowerUp = powerUpDefinitions[Math.floor(Math.random() * powerUpDefinitions.length)];
+                powerUps.push(randomPowerUp);
+                alert(`🎁 Power-Up Found!\n\n${randomPowerUp.name}\n${randomPowerUp.description}`);
+            }
+        }
+
+        function updateUI() {
+            const page = pages[currentPage];
+            
+            // Update page content
+            document.getElementById('pageTitle').textContent = page.title;
+            document.getElementById('pageSubtitle').textContent = page.subtitle;
+            document.getElementById('pageIcon').textContent = page.icon;
+            document.getElementById('contentText').textContent = page.content;
+            document.getElementById('actionButtonText').textContent = page.buttonText;
+            document.getElementById('actionButton').style.background = page.buttonColor;
+            
+            // Update score and level
+            document.getElementById('score').textContent = score;
+            document.getElementById('currentLevel').textContent = currentPage + 1;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('highScore').textContent = highScore;
+            document.getElementById('achievementCount').textContent = achievements.length;
+            
+            // Update progress bar
+            const progressPercent = ((currentPage + 1) / pages.length) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            
+            // Update navigation dots
+            updateNavigationDots();
+            
+            // Update challenge box
+            const challengeBox = document.getElementById('challengeBox');
+            if (page.challenge) {
+                document.getElementById('challengeText').textContent = page.challenge;
+                challengeBox.style.display = 'block';
+            } else {
+                challengeBox.style.display = 'none';
+            }
+            
+            // Update completed steps
+            updateCompletedSteps();
+            
+            // Update power-ups display
+            updatePowerUps();
+            
+            // Update achievements display
+            updateAchievements();
+        }
+        
+        function updateNavigationDots() {
+            const dotsContainer = document.getElementById('navigationDots');
+            dotsContainer.innerHTML = '';
+            
+            pages.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                
+                if (index === currentPage) {
+                    dot.classList.add('active');
+                } else if (completedSteps.includes(index)) {
+                    dot.classList.add('completed');
+                } else if (index > completedSteps.length && index !== 0) {
+                    dot.classList.add('locked');
+                }
+                
+                dot.onclick = () => goToPage(index);
+                dotsContainer.appendChild(dot);
+            });
+        }
+        
+        function updateCompletedSteps() {
+            const completedStepsDiv = document.getElementById('completedSteps');
+            const completedStepsList = document.getElementById('completedStepsList');
+            
+            if (completedSteps.length > 0) {
+                completedStepsDiv.style.display = 'block';
+                completedStepsList.innerHTML = '';
+                completedSteps.forEach(stepIndex => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'completed-step';
+                    stepDiv.textContent = '• ' + pages[stepIndex].title;
+                    completedStepsList.appendChild(stepDiv);
+                });
+            } else {
+                completedStepsDiv.style.display = 'none';
+            }
+        }
+        
+        function goToPage(pageIndex) {
+            if (pageIndex <= completedSteps.length || pageIndex === 0) {
+                currentPage = pageIndex;
+                updateUI();
+            }
+        }
+        
+        function updatePowerUps() {
+            const powerUpsDiv = document.getElementById('powerUps');
+            if (powerUps.length > 0) {
+                powerUpsDiv.style.display = 'block';
+                powerUpsDiv.innerHTML = '<div class="power-ups-title">🎁 Active Power-ups:</div>';
+                powerUps.forEach((powerUp, index) => {
+                    const powerUpDiv = document.createElement('div');
+                    powerUpDiv.className = 'power-up-item';
+                    powerUpDiv.textContent = powerUp.name;
+                    powerUpsDiv.appendChild(powerUpDiv);
+                });
+            } else {
+                powerUpsDiv.style.display = 'none';
+            }
+        }
+
+        function updateAchievements() {
+            const achievementsDiv = document.getElementById('achievements');
+            if (achievements.length > 0) {
+                achievementsDiv.style.display = 'block';
+                achievementsDiv.innerHTML = '<div class="achievements-title">🏆 Achievements:</div>';
+                achievements.forEach(achievementId => {
+                    const achievement = achievementDefinitions.find(a => a.id === achievementId);
+                    const achievementDiv = document.createElement('div');
+                    achievementDiv.className = 'achievement-text';
+                    achievementDiv.textContent = '• ' + achievement?.name;
+                    achievementsDiv.appendChild(achievementDiv);
+                });
+            } else {
+                achievementsDiv.style.display = 'none';
+            }
+        }
+
+        function handlePageAction() {
+            // Add fade effect
+            const pageContainer = document.getElementById('pageContainer');
+            pageContainer.classList.add('fade');
+            
+            setTimeout(() => {
+                pageContainer.classList.remove('fade');
+                
+                if (currentPage < pages.length - 1) {
+                    // Complete current step
+                    if (!completedSteps.includes(currentPage)) {
+                        const levelTime = Date.now() - levelStartTime;
+                        const baseScore = 100;
+                        let finalScore = baseScore;
+                        
+                        // Time bonus calculation
+                        const timeBonus = Math.max(0, Math.floor((30000 - levelTime) / 1000) * 10);
+                        finalScore += timeBonus;
+                        
+                        // Power-up multipliers
+                        const activePowerUps = powerUps.filter(p => p.multiplier);
+                        activePowerUps.forEach(powerUp => {
+                            finalScore *= powerUp.multiplier;
+                        });
+                        
+                        // Streak bonus
+                        const streakBonus = streak * 25;
+                        finalScore += streakBonus;
+                        
+                        const newScore = score + finalScore;
+                        const newSteps = completedSteps.length + 1;
+                        
+                        completedSteps.push(currentPage);
+                        score = newScore;
+                        streak++;
+                        
+                        // Check achievements
+                        checkAchievements(newScore, newSteps, levelTime);
+                        
+                        // Generate power-up
+                        generatePowerUp();
+                        
+                        // Update high score
+                        if (newScore > highScore) {
+                            highScore = newScore;
+                        }
+                        
+                        alert(`🎉 Challenge Complete!\n+${finalScore} points!\n${timeBonus > 0 ? `+${timeBonus} time bonus!\n` : ''}${streakBonus > 0 ? `+${streakBonus} streak bonus!\n` : ''}${pages[currentPage].challenge || 'Step completed!'}`);
+                    }
+                    
+                    // Move to next page
+                    currentPage++;
+                    levelStartTime = Date.now();
+                    updateUI();
+                } else {
+                    // Restart game
+                    if (confirm(`🔄 New Game?\n\nFinal Score: ${score}\nHigh Score: ${Math.max(score, highScore)}\nAchievements: ${achievements.length}/6`)) {
+                        currentPage = 0;
+                        score = 0;
+                        completedSteps = [];
+                        streak = 0;
+                        powerUps = [];
+                        levelStartTime = Date.now();
+                        updateUI();
+                    }
+                }
+            }, 300);
+        }
+        
+        // Initialize the game
+        document.getElementById('actionButton').onclick = handlePageAction;
+        updateUI();
     </script>
 </body>
 </html>
