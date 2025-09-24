@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innovation Quest - Gamified Mobile App</title>
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <!-- Simple Visitor Counter -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
+        // Simple local storage counter
+        function updateVisitorCount() {
+            let count = localStorage.getItem('innovationQuestVisitors') || 0;
+            count = parseInt(count) + 1;
+            localStorage.setItem('innovationQuestVisitors', count);
+            return count;
+        }
+        
+        // Update counter on page load
+        window.addEventListener('load', function() {
+            const count = updateVisitorCount();
+            const counterElement = document.getElementById('visitorCount');
+            if (counterElement) {
+                counterElement.textContent = count;
+            }
+        });
     </script>
     <style>
         * {
@@ -300,6 +311,20 @@
             color: #2c3e50;
             font-size: 14px;
         }
+        
+        .visitor-counter {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .visitor-counter p {
+            margin: 0;
+            font-weight: bold;
+            color: #3498db;
+        }
     </style>
 </head>
 <body>
@@ -329,6 +354,9 @@
         <div class="demo-notice">
             <h3>🎮 Gamified Innovation Quest</h3>
             <p>Complete challenges to unlock amazing features! Each step is a new level.</p>
+            <div class="visitor-counter">
+                <p>👥 Players: <span id="visitorCount">Loading...</span></p>
+            </div>
         </div>
         
         <!-- Page Content -->
@@ -694,40 +722,50 @@
             }, 300);
         }
         
-        // Analytics tracking functions
-        function trackGameEvent(eventName, parameters = {}) {
-            if (typeof gtag !== 'undefined') {
-                gtag('event', eventName, {
-                    'game_name': 'Innovation Quest',
-                    'level': currentPage + 1,
-                    'score': score,
-                    'streak': streak,
-                    ...parameters
-                });
+        // Simple local tracking functions
+        function trackGameEvent(eventName, data = {}) {
+            // Store game events in localStorage
+            const gameData = JSON.parse(localStorage.getItem('innovationQuestData') || '{}');
+            if (!gameData.events) gameData.events = [];
+            
+            gameData.events.push({
+                event: eventName,
+                timestamp: new Date().toISOString(),
+                level: currentPage + 1,
+                score: score,
+                streak: streak,
+                ...data
+            });
+            
+            // Keep only last 100 events to avoid storage bloat
+            if (gameData.events.length > 100) {
+                gameData.events = gameData.events.slice(-100);
             }
+            
+            localStorage.setItem('innovationQuestData', JSON.stringify(gameData));
         }
 
         function trackLevelComplete(levelName, finalScore, timeTaken) {
             trackGameEvent('level_complete', {
-                'level_name': levelName,
-                'final_score': finalScore,
-                'time_taken': timeTaken,
-                'achievements_unlocked': achievements.length
+                level_name: levelName,
+                final_score: finalScore,
+                time_taken: timeTaken,
+                achievements_unlocked: achievements.length
             });
         }
 
         function trackGameStart() {
             trackGameEvent('game_start', {
-                'total_levels': pages.length
+                total_levels: pages.length
             });
         }
 
         function trackGameComplete(finalScore, totalTime) {
             trackGameEvent('game_complete', {
-                'final_score': finalScore,
-                'total_time': totalTime,
-                'achievements_unlocked': achievements.length,
-                'high_score': highScore
+                final_score: finalScore,
+                total_time: totalTime,
+                achievements_unlocked: achievements.length,
+                high_score: highScore
             });
         }
 
